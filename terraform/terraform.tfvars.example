@@ -1,0 +1,9 @@
+# Copy this file to terraform.tfvars and fill in your values.
+# Do NOT commit terraform.tfvars — it contains your billing account ID.
+
+project_id      = "dev-knowledge-mcp"    # Must be globally unique — add a suffix if taken
+project_name    = "Developer Knowledge MCP"
+billing_account = "XXXXXX-XXXXXX-XXXXXX" # gcloud billing accounts list
+org_id          = ""                      # Leave empty if no org
+folder_id       = ""                      # Leave empty for org root / no-org
+region          = "us-central1"
