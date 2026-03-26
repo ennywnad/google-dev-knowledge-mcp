@@ -25,13 +25,81 @@ resource "google_project" "mcp" {
 }
 
 # -----------------------------------------------------------------------------
-# Enable the Developer Knowledge API
+# Enable APIs
 # -----------------------------------------------------------------------------
 resource "google_project_service" "developer_knowledge" {
   project = google_project.mcp.project_id
   service = "developerknowledge.googleapis.com"
 
   disable_on_destroy = false
+}
+
+resource "google_project_service" "billing_budgets" {
+  project = google_project.mcp.project_id
+  service = "billingbudgets.googleapis.com"
+
+  disable_on_destroy = false
+}
+
+resource "google_project_service" "monitoring" {
+  project = google_project.mcp.project_id
+  service = "monitoring.googleapis.com"
+
+  disable_on_destroy = false
+}
+
+# -----------------------------------------------------------------------------
+# Billing Budget & Alerts
+# Sends email notifications at 50%, 90%, and 100% of the monthly budget.
+# -----------------------------------------------------------------------------
+resource "google_monitoring_notification_channel" "email" {
+  project      = google_project.mcp.project_id
+  display_name = "Budget Alert Email"
+  type         = "email"
+
+  labels = {
+    email_address = var.support_email
+  }
+
+  depends_on = [google_project_service.monitoring]
+}
+
+resource "google_billing_budget" "monthly" {
+  billing_account = var.billing_account
+  display_name    = "${var.project_name} - Monthly Budget"
+
+  budget_filter {
+    projects = ["projects/${google_project.mcp.number}"]
+  }
+
+  amount {
+    specified_amount {
+      currency_code = "USD"
+      units         = var.budget_amount
+    }
+  }
+
+  threshold_rules {
+    threshold_percent = 0.5
+    spend_basis       = "CURRENT_SPEND"
+  }
+
+  threshold_rules {
+    threshold_percent = 0.9
+    spend_basis       = "CURRENT_SPEND"
+  }
+
+  threshold_rules {
+    threshold_percent = 1.0
+    spend_basis       = "CURRENT_SPEND"
+  }
+
+  all_updates_rule {
+    monitoring_notification_channels = [google_monitoring_notification_channel.email.id]
+    disable_default_iam_recipients   = false
+  }
+
+  depends_on = [google_project_service.billing_budgets]
 }
 
 # -----------------------------------------------------------------------------

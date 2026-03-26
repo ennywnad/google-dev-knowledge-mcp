@@ -33,3 +33,14 @@ variable "region" {
   type        = string
   default     = "us-central1"
 }
+
+variable "support_email" {
+  description = "Email address to receive billing budget alerts"
+  type        = string
+}
+
+variable "budget_amount" {
+  description = "Monthly budget limit in USD"
+  type        = number
+  default     = 10
+}
