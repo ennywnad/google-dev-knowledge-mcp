@@ -15,6 +15,9 @@ Thumbs.db
 *.swp
 *.swo
 
+# Claude Code — local settings contain personal permissions
+.claude/settings.local.json
+
 # Credentials — never commit these
 *.json.bak
 credentials.json
