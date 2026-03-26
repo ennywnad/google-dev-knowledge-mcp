@@ -1,14 +1,9 @@
 {
+  "_comment": "Reference config — run scripts/configure-claude-code.sh to register this automatically. OAuth fields are populated by Claude Code after running `claude mcp add --client-id ... --client-secret`.",
   "mcpServers": {
-    "google-developer-knowledge": {
-      "httpUrl": "https://developerknowledge.googleapis.com/mcp",
-      "authProviderType": "google_credentials",
-      "oauth": {
-        "scopes": [
-          "https://www.googleapis.com/auth/cloud-platform"
-        ]
-      },
-      "timeout": 30000,
+    "google-dev-knowledge": {
+      "type": "http",
+      "url": "https://developerknowledge.googleapis.com/mcp",
       "headers": {
         "X-goog-user-project": "YOUR_PROJECT_ID"
       }

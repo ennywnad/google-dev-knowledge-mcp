@@ -74,3 +74,13 @@ output "billing_url" {
   description = "Direct link to billing reports filtered to this project"
   value       = "https://console.cloud.google.com/billing/linkedaccount?project=${google_project.mcp.project_id}"
 }
+
+output "oauth_consent_url" {
+  description = "Direct link to configure the OAuth consent screen (do this before creating a client ID)"
+  value       = "https://console.cloud.google.com/apis/credentials/consent?project=${google_project.mcp.project_id}"
+}
+
+output "oauth_credentials_url" {
+  description = "Direct link to create a Desktop app OAuth 2.0 client ID"
+  value       = "https://console.cloud.google.com/apis/credentials/oauthclient?project=${google_project.mcp.project_id}"
+}

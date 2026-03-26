@@ -41,6 +41,7 @@ Edit `terraform.tfvars` with your values:
 ```hcl
 project_id      = "dev-knowledge-mcp-yourname"  # Must be globally unique
 billing_account = "XXXXXX-XXXXXX-XXXXXX"
+support_email   = "you@example.com"              # Your Google account email
 ```
 
 > **Note:** The `project_id` must be globally unique across all of GCP. If `dev-knowledge-mcp` is taken, add a suffix like your initials or a number.
@@ -55,28 +56,39 @@ terraform apply
 
 Terraform will output your project ID and direct links to the API dashboard and billing reports.
 
-### 4. Authenticate (OAuth / ADC)
+### 4. Create an OAuth client ID
 
-```bash
-cd ..
-./scripts/setup-auth.sh
-```
+Terraform outputs two URLs to guide you. Open them in order:
 
-This runs `gcloud auth application-default login` scoped to your new project. A browser window will open for you to authorize.
+**a) Configure the OAuth consent screen** (`oauth_consent_url` output):
+- Click **Get started**, fill in App name (e.g. `Developer Knowledge MCP`) and your email
+- Set audience to **External**, add yourself as a test user, save
+
+**b) Create a Desktop app client ID** (`oauth_credentials_url` output):
+- Click **Create credentials → OAuth client ID**
+- Choose **Desktop app**, name it (e.g. `claude-code-mcp`)
+- Copy the **Client ID** and **Client Secret**
+
+> **Note:** `google_iap_brand` (the Terraform resource for consent screens) requires a GCP organization — personal projects must configure the consent screen manually. It's a one-time, ~2 minute setup.
 
 ### 5. Configure your AI tools
 
 #### Claude Code (CLI)
 
 ```bash
+cd ..
 ./scripts/configure-claude-code.sh
 ```
+
+The script reads your project ID from Terraform, opens the credentials URL, prompts for your Client ID and secret, then registers the server. Claude Code will open a browser for OAuth consent on first use and handles token refresh automatically.
 
 Or manually:
 
 ```bash
 claude mcp add google-dev-knowledge \
   --transport http \
+  --client-id YOUR_CLIENT_ID \
+  --client-secret \
   "https://developerknowledge.googleapis.com/mcp" \
   --header "X-goog-user-project: YOUR_PROJECT_ID"
 ```

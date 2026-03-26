@@ -4,7 +4,7 @@
       "type": "http",
       "url": "https://developerknowledge.googleapis.com/mcp",
       "headers": {
-        "X-goog-user-project": "YOUR_PROJECT_ID"
+        "X-goog-user-project": "dev-knowledge-mcp-dw"
       }
     }
   }
